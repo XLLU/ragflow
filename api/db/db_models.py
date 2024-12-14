@@ -855,6 +855,8 @@ class Task(DataBaseModel):
         help_text="process message",
         default="")
     retry_count = IntegerField(default=0)
+    digest = TextField(null=True, help_text="task digest", default="")
+    chunk_ids = LongTextField(null=True, help_text="chunk ids", default="")
 
 
 class Dialog(DataBaseModel):
@@ -934,6 +936,7 @@ class APIToken(DataBaseModel):
     token = CharField(max_length=255, null=False, index=True)
     dialog_id = CharField(max_length=32, null=False, index=True)
     source = CharField(max_length=16, null=True, help_text="none|agent|dialog", index=True)
+    beta = CharField(max_length=255, null=True, index=True)
 
     class Meta:
         db_table = "api_token"
@@ -1083,4 +1086,22 @@ def migrate_db():
             )
         except Exception:
             pass
+        try:
+            migrate(
+                migrator.add_column("api_token", "beta", CharField(max_length=255, null=True, index=True))
+            )
+        except Exception:
+            pass
+        try:
+            migrate(
+                migrator.add_column("task", "digest", TextField(null=True, help_text="task digest", default=""))
+            )
+        except Exception:
+            pass
 
+        try:
+            migrate(
+                migrator.add_column("task", "chunk_ids", LongTextField(null=True, help_text="chunk ids", default=""))
+            )
+        except Exception:
+            pass
