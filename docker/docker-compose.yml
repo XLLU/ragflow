@@ -23,8 +23,8 @@ services:
       - TZ=${TIMEZONE}
       - HF_ENDPOINT=${HF_ENDPOINT}
       - MACOS=${MACOS}
-      - VIRTUAL_HOST=ragflow3.freemium.cc
-      - LETSENCRYPT_HOST=ragflow3.freemium.cc
+      - VIRTUAL_HOST=ragflow.freemium.cc
+      - LETSENCRYPT_HOST=ragflow.freemium.cc
       - LETSENCRYPT_EMAIL=lucasluu@yahoo.com
     networks:
       - ragflow
