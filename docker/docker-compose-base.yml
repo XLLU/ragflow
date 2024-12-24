@@ -27,13 +27,13 @@ services:
         soft: -1
         hard: -1
     healthcheck:
-      test: ["CMD-SHELL", "curl http://localhost:9200"]
+      test: [ "CMD-SHELL", "curl http://localhost:9200" ]
       interval: 10s
       timeout: 10s
       retries: 120
     networks:
       - ragflow
-    restart: on-failure
+    restart: always
 
   infinity:
     container_name: ragflow-infinity
@@ -43,7 +43,7 @@ services:
     volumes:
       - infinity_data:/var/infinity
       - ./infinity_conf.toml:/infinity_conf.toml
-    command: ["-f", "/infinity_conf.toml"]
+    command: [ "-f", "/infinity_conf.toml" ]
     ports:
       - ${INFINITY_THRIFT_PORT}:23817
       - ${INFINITY_HTTP_PORT}:23820
@@ -59,12 +59,11 @@ services:
     networks:
       - ragflow
     healthcheck:
-      test: ["CMD", "curl", "http://localhost:23820/admin/node/current"]
+      test: [ "CMD", "curl", "http://localhost:23820/admin/node/current" ]
       interval: 10s
       timeout: 10s
       retries: 120
-    restart: on-failure
-
+    restart: always
 
   mysql:
     # mysql:5.7 linux/arm64 image is unavailable.
@@ -74,13 +73,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
       - TZ=${TIMEZONE}
-    command:
-      --max_connections=1000
-      --character-set-server=utf8mb4
-      --collation-server=utf8mb4_unicode_ci
-      --default-authentication-plugin=mysql_native_password
-      --tls_version="TLSv1.2,TLSv1.3"
-      --init-file /data/application/init.sql
+    command: --max_connections=1000 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password --tls_version="TLSv1.2,TLSv1.3" --init-file /data/application/init.sql
     ports:
       - ${MYSQL_PORT}:3306
     volumes:
@@ -89,11 +82,11 @@ services:
     networks:
       - ragflow
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-uroot", "-p${MYSQL_PASSWORD}"]
+      test: [ "CMD", "mysqladmin", "ping", "-uroot", "-p${MYSQL_PASSWORD}" ]
       interval: 10s
       timeout: 10s
       retries: 3
-    restart: on-failure
+    restart: always
 
   minio:
     image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z
@@ -111,7 +104,7 @@ services:
       - minio_data:/data
     networks:
       - ragflow
-    restart: on-failure
+    restart: always
 
   redis:
     image: valkey/valkey:8
@@ -124,9 +117,7 @@ services:
       - redis_data:/data
     networks:
       - ragflow
-    restart: on-failure
-
-
+    restart: always
 
 volumes:
   esdata01:
